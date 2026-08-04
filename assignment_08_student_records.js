@@ -84,4 +84,110 @@
 // YOUR CODE BELOW — remove the // symbols from the scaffold and fill it in
 // =============================================================================
 
+const readline = require('readline');
 
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+function askQuestion(query) {
+  return new Promise((resolve) => {
+    rl.question(query, (answer) => {
+      resolve(answer);
+    });
+  });
+}
+
+async function addStudent(students) {
+  const student = { name: "", id: 0, scores: [] };
+
+  student.name = await askQuestion("Student name: ");
+  student.id = parseInt(await askQuestion("Student ID: "));
+
+  const numScores = parseInt(await askQuestion("How many scores? "));
+  for (let i = 0; i < numScores; i++) {
+    const score = parseInt(await askQuestion(`Enter score ${i + 1}: `));
+    student.scores.push(score);
+  }
+
+  students.push(student);
+  console.log(`Student "${student.name}" added successfully.`);
+}
+
+function displayStudents(students) {
+  if (students.length === 0) {
+    console.log("No students added yet.");
+    return;
+  }
+
+  console.log("-".repeat(60));
+  console.log(
+    "Name".padEnd(20) + "ID".padEnd(12) + "Scores".padEnd(18) + "Average"
+  );
+  console.log("-".repeat(60));
+
+  for (const s of students) {
+    const scoresStr = s.scores.join(", ");
+    const total = s.scores.reduce((sum, score) => sum + score, 0);
+    const avg = total / s.scores.length;
+
+    const line =
+      s.name.padEnd(20) +
+      s.id.toString().padEnd(12) +
+      scoresStr.padEnd(18) +
+      avg.toFixed(2);
+
+    console.log(line);
+  }
+
+  console.log("-".repeat(60));
+}
+
+async function calculateAverage(students) {
+  const studentId = parseInt(await askQuestion("Enter student ID: "));
+
+  for (const s of students) {
+    if (s.id === studentId) {
+      const total = s.scores.reduce((sum, score) => sum + score, 0);
+      const avg = total / s.scores.length;
+      console.log(`${s.name}'s average score: ${avg.toFixed(2)}`);
+      return;
+    }
+  }
+
+  console.log("Error: Student ID not found.");
+}
+
+async function main() {
+  const students = [];
+
+  while (true) {
+    console.log("================================");
+    console.log("   STUDENT RECORD SYSTEM MENU");
+    console.log("================================");
+    console.log("1. Add student");
+    console.log("2. Display all students");
+    console.log("3. Calculate average score");
+    console.log("4. Quit");
+
+    const choice = parseInt(await askQuestion("Enter your choice (1-4): "));
+
+    if (choice === 1) {
+      await addStudent(students);
+    } else if (choice === 2) {
+      displayStudents(students);
+    } else if (choice === 3) {
+      await calculateAverage(students);
+    } else if (choice === 4) {
+      console.log("Goodbye!");
+      break;
+    } else {
+      console.log("Error: Invalid choice. Please enter a number between 1 and 4.");
+    }
+  }
+
+  rl.close();
+}
+
+main();
