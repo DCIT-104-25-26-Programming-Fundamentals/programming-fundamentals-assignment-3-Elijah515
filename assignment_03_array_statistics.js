@@ -44,3 +44,77 @@
 // =============================================================================
 
 
+const readline = require('readline');
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+function calculateSum(numbers) {
+  let total = 0;
+  for (const num of numbers) {
+    total = total + num;
+  }
+  return total;
+}
+
+function calculateAverage(numbers) {
+  const total = calculateSum(numbers);
+  const count = numbers.length;
+  const average = total / count;
+  return average;
+}
+
+function calculateMax(numbers) {
+  let maxValue = numbers[0];
+  for (const num of numbers) {
+    if (num > maxValue) {
+      maxValue = num;
+    }
+  }
+  return maxValue;
+}
+
+function calculateMin(numbers) {
+  let minValue = numbers[0];
+  for (const num of numbers) {
+    if (num < minValue) {
+      minValue = num;
+    }
+  }
+  return minValue;
+}
+
+async function main() {
+  const n = await askQuestion("How many numbers? ");
+  const numbers = [];
+
+  for (let i = 0; i < n; i++) {
+    const num = await askQuestion(`Enter number ${i + 1}: `);
+    numbers.push(num);
+  }
+
+  const total = calculateSum(numbers);
+  const avg = calculateAverage(numbers);
+  const maxVal = calculateMax(numbers);
+  const minVal = calculateMin(numbers);
+
+  console.log("Results:");
+  console.log("Sum: " + total);
+  console.log("Average: " + avg);
+  console.log("Maximum: " + maxVal);
+  console.log("Minimum: " + minVal);
+
+  rl.close();
+}
+
+function askQuestion(query) {
+  return new Promise((resolve) => {
+    rl.question(query, (answer) => {
+      resolve(parseInt(answer));
+    });
+  });
+}
+
+main();
