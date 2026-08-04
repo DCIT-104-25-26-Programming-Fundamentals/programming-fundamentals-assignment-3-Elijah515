@@ -82,3 +82,82 @@
 // =============================================================================
 
 
+const readline = require('readline');
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+function askQuestion(query) {
+  return new Promise((resolve) => {
+    rl.question(query, (answer) => {
+      resolve(answer);
+    });
+  });
+}
+
+async function addTask(tasks) {
+  const task = await askQuestion("");
+  tasks.push(task);
+  console.log(`Task added: "${task}"`);
+}
+
+function viewTasks(tasks) {
+  if (tasks.length === 0) {
+    console.log("No tasks yet!");
+  } else {
+    console.log("Your Tasks:");
+    for (let i = 0; i < tasks.length; i++) {
+      console.log(`${i + 1}. ${tasks[i]}`);
+    }
+  }
+}
+
+async function deleteTask(tasks) {
+  viewTasks(tasks);
+  if (tasks.length === 0) {
+    return;
+  }
+  const num = parseInt(await askQuestion("Enter task number to delete: "));
+  if (num < 1 || num > tasks.length) {
+    console.log("Error: Invalid task number.");
+  } else {
+    const removed = tasks[num - 1];
+    tasks.splice(num - 1, 1);
+    console.log(`Task "${removed}" has been removed.`);
+  }
+}
+
+async function main() {
+  const tasks = [];
+
+  while (true) {
+    console.log("============================");
+    console.log("     TO-DO LIST MENU");
+    console.log("============================");
+    console.log("1. Add task");
+    console.log("2. View tasks");
+    console.log("3. Delete task");
+    console.log("4. Quit");
+
+    const choice = parseInt(await askQuestion("Enter your choice (1-4): "));
+
+    if (choice === 1) {
+      await addTask(tasks);
+    } else if (choice === 2) {
+      viewTasks(tasks);
+    } else if (choice === 3) {
+      await deleteTask(tasks);
+    } else if (choice === 4) {
+      console.log("Goodbye!");
+      break;
+    } else {
+      console.log("Error: Invalid choice. Please enter a number between 1 and 4.");
+    }
+  }
+
+  rl.close();
+}
+
+main();
