@@ -59,4 +59,53 @@
 // YOUR CODE BELOW — remove the // symbols from the scaffold and fill it in
 // =============================================================================
 
+const readline = require('readline');
 
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+function printTable(number) {
+  console.log(`Multiplication Table for ${number}:`);
+  for (let i = 1; i <= 12; i++) {
+    console.log(`${number}  x  ${i}  =  ${number * i}`);
+  }
+}
+
+function printAllTables(n) {
+  for (let number = 1; number <= n; number++) {
+    printTable(number);
+    console.log("-".repeat(27));
+  }
+}
+
+function askQuestion(query) {
+  return new Promise((resolve) => {
+    rl.question(query, (answer) => {
+      resolve(parseInt(answer));
+    });
+  });
+}
+
+async function main() {
+  const n = await askQuestion("Enter a number: ");
+
+  if (n <= 0) {
+    console.log("Error: N must be a positive integer.");
+  } else {
+    printTable(n);
+  }
+
+  const n2 = await askQuestion("Enter N (for tables 1 to N): ");
+
+  if (n2 <= 0) {
+    console.log("Error: N must be a positive integer.");
+  } else {
+    printAllTables(n2);
+  }
+
+  rl.close();
+}
+
+main();
