@@ -55,3 +55,65 @@
 // =============================================================================
 
 
+const readline = require('readline');
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+function printFibonacci(n) {
+  let a = 0, b = 1;
+  let output = "";
+  for (let i = 0; i < n; i++) {
+    output += a + " ";
+    const next = a + b;
+    a = b;
+    b = next;
+  }
+  console.log(output);
+}
+
+function isFibonacci(num) {
+  let a = 0, b = 1;
+  while (a <= num) {
+    if (a === num) {
+      return true;
+    }
+    const next = a + b;
+    a = b;
+    b = next;
+  }
+  return false;
+}
+
+function askQuestion(query) {
+  return new Promise((resolve) => {
+    rl.question(query, (answer) => {
+      resolve(parseInt(answer));
+    });
+  });
+}
+
+async function main() {
+  const n = await askQuestion("How many terms? ");
+
+  if (n <= 0) {
+    console.log("Error: N must be a positive integer.");
+  } else {
+    process.stdout.write("Fibonacci sequence: ");
+    printFibonacci(n);
+  }
+
+  const num = await askQuestion("Enter a number to check: ");
+
+  if (isFibonacci(num)) {
+    console.log(`${num} is a Fibonacci number.`);
+  } else {
+    console.log(`${num} is NOT a Fibonacci number.`);
+  }
+
+  rl.close();
+}
+
+main();
