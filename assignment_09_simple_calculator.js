@@ -74,4 +74,95 @@
 // YOUR CODE BELOW — remove the // symbols from the scaffold and fill it in
 // =============================================================================
 
+const readline = require('readline');
 
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+function askQuestion(query) {
+  return new Promise((resolve) => {
+    rl.question(query, (answer) => {
+      resolve(answer);
+    });
+  });
+}
+
+function add(a, b) {
+  return a + b;
+}
+
+function subtract(a, b) {
+  return a - b;
+}
+
+function multiply(a, b) {
+  return a * b;
+}
+
+function divide(a, b) {
+  if (b === 0) {
+    return { success: false, result: null };
+  }
+  const result = Math.round((a / b) * 100) / 100;
+  return { success: true, result: result };
+}
+
+function modulusOperation(a, b) {
+  return a % b;
+}
+
+function exponent(a, b) {
+  return Math.pow(a, b);
+}
+
+async function main() {
+  while (true) {
+    console.log("============================");
+    console.log("     SIMPLE CALCULATOR");
+    console.log("============================");
+    console.log("1. Addition");
+    console.log("2. Subtraction");
+    console.log("3. Multiplication");
+    console.log("4. Division");
+    console.log("5. Modulus");
+    console.log("6. Exponentiation");
+    console.log("7. Quit");
+
+    const choice = parseInt(await askQuestion("Select an operation (1-7): "));
+
+    if (choice === 7) {
+      console.log("Goodbye!");
+      break;
+    } else if (choice >= 1 && choice <= 6) {
+      const num1 = parseFloat(await askQuestion("Enter first number : "));
+      const num2 = parseFloat(await askQuestion("Enter second number: "));
+
+      if (choice === 1) {
+        console.log(`Result: ${num1} + ${num2} = ${add(num1, num2)}`);
+      } else if (choice === 2) {
+        console.log(`Result: ${num1} - ${num2} = ${subtract(num1, num2)}`);
+      } else if (choice === 3) {
+        console.log(`Result: ${num1} * ${num2} = ${multiply(num1, num2)}`);
+      } else if (choice === 4) {
+        const { success, result } = divide(num1, num2);
+        if (!success) {
+          console.log("Error: Cannot divide by zero.");
+        } else {
+          console.log(`Result: ${num1} / ${num2} = ${result}`);
+        }
+      } else if (choice === 5) {
+        console.log(`Result: ${num1} % ${num2} = ${modulusOperation(num1, num2)}`);
+      } else if (choice === 6) {
+        console.log(`Result: ${num1} ^ ${num2} = ${exponent(num1, num2)}`);
+      }
+    } else {
+      console.log("Error: Invalid choice. Please enter a number between 1 and 7.");
+    }
+  }
+
+  rl.close();
+}
+
+main();
